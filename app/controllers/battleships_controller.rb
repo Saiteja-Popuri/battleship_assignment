@@ -5,111 +5,114 @@ class BattleshipsController
   BATTLESHIP = 'B'.freeze
   CRUISER   = 'C'.freeze
 
-  def initialize # rubocop:disable Metrics/MethodLength
+  def initialize
     @board = Array.new(10) { Array.new(10) }
-    @new_board = @board.map {|row| row.map { 0 }}
+    @board = @board.map {|row| row.map { 0 }}
     @random_number = Random.new
     @is_vertical = (@random_number.rand(50) % 2 == 0) ? false : true
-    init_x = @random_number.rand(50) % (@is_vertical ? 10 : 6)
-    init_y = @random_number.rand(50) % (@is_vertical ? 6 : 10)
+    row_index = @random_number.rand(50) % (@is_vertical ? 10 : 6)
+    column_index = @random_number.rand(50) % (@is_vertical ? 6 : 10)
 
     # Arranging Cruiser pieces.
     for i in 0..4
       if @is_vertical
-        @new_board[init_x][init_y + i] = CRUISER
+        @board[row_index][column_index + i] = CRUISER
       else
-        @new_board[init_x + i][init_y] = CRUISER
+        @board[row_index + i][column_index] = CRUISER
       end
     end
 
     # Arranging Battleship pieces.
     loop do
       @is_vertical = (@random_number.rand(50) % 2 == 0) ? false : true
-      init_x = @random_number.rand(50) % (@is_vertical ? 10 : 7)
-      init_y = @random_number.rand(50) % (@is_vertical ? 7 : 10)
-      break if !((@new_board[init_x][init_y] != 0) ||
-                (@is_vertical && ((@new_board[init_x][init_y + 1] != 0) ||
-                (@new_board[init_x][init_y + 2] != 0) || (@new_board[init_x][init_y + 3] != 0))) ||
-                (!@is_vertical && ((@new_board[init_x + 1][init_y] != 0) ||
-                (@new_board[init_x + 2][init_y] != 0) || (@new_board[init_x + 3][init_y] != 0))))
+      row_index = @random_number.rand(50) % (@is_vertical ? 10 : 7)
+      column_index = @random_number.rand(50) % (@is_vertical ? 7 : 10)
+      break if !((@board[row_index][column_index] != 0) ||
+                (@is_vertical && ((@board[row_index][column_index + 1] != 0) ||
+                (@board[row_index][column_index + 2] != 0) || (@board[row_index][column_index + 3] != 0))) ||
+                (!@is_vertical && ((@board[row_index + 1][column_index] != 0) ||
+                (@board[row_index + 2][column_index] != 0) || (@board[row_index + 3][column_index] != 0))))
     end
 
     if @is_vertical
-      @new_board[init_x][init_y]     =
-      @new_board[init_x][init_y + 1] =
-      @new_board[init_x][init_y + 2] = @new_board[init_x][init_y + 3] = BATTLESHIP
+      @board[row_index][column_index]     =
+      @board[row_index][column_index + 1] =
+      @board[row_index][column_index + 2] = @board[row_index][column_index + 3] = BATTLESHIP
 
     else
-      @new_board[init_x][init_y]     =
-      @new_board[init_x + 1][init_y] =
-      @new_board[init_x + 2][init_y] = @new_board[init_x + 3][init_y] = BATTLESHIP
+      @board[row_index][column_index]     =
+      @board[row_index + 1][column_index] =
+      @board[row_index + 2][column_index] = @board[row_index + 3][column_index] = BATTLESHIP
     end
 
     # Arranging Destroyer pieces.
     loop do
       @is_vertical = (@random_number.rand(50) % 2 == 0) ? false : true
-      init_x = @random_number.rand(50) % (@is_vertical ? 10 : 8)
-      init_y = @random_number.rand(50) % (@is_vertical ? 8 : 10)
-      break if !((@new_board[init_x][init_y] != 0) ||
+      row_index = @random_number.rand(50) % (@is_vertical ? 10 : 8)
+      column_index = @random_number.rand(50) % (@is_vertical ? 8 : 10)
+      break if !((@board[row_index][column_index] != 0) ||
                 (@is_vertical &&
-                        ((@new_board[init_x][init_y + 1] != 0) || (@new_board[init_x][init_y + 2] != 0))) ||
+                        ((@board[row_index][column_index + 1] != 0) || (@board[row_index][column_index + 2] != 0))) ||
                 (!@is_vertical &&
-                        ((@new_board[init_x + 1][init_y] != 0) || (@new_board[init_x + 2][init_y] != 0))))
+                        ((@board[row_index + 1][column_index] != 0) || (@board[row_index + 2][column_index] != 0))))
     end
 
     if @is_vertical
-      @new_board[init_x][init_y]   = @new_board[init_x][init_y + 1] = @new_board[init_x][init_y + 2] = DESTROYER
+      @board[row_index][column_index]   = @board[row_index][column_index + 1] = @board[row_index][column_index + 2] = DESTROYER
     else
-      @new_board[init_x][init_y]   = @new_board[init_x + 1][init_y] = @new_board[init_x + 2][init_y] = DESTROYER
+      @board[row_index][column_index]   = @board[row_index + 1][column_index] = @board[row_index + 2][column_index] = DESTROYER
     end
 
     # Arranging Submarine pieces.
     loop do
       @is_vertical = (@random_number.rand(50) % 2 == 0) ? false : true
-      init_x = @random_number.rand(50) % (@is_vertical ? 10 : 8)
-      init_y = @random_number.rand(50) % (@is_vertical ? 8 : 10)
-      break if !((@new_board[init_x][init_y] != 0) ||
+      row_index = @random_number.rand(50) % (@is_vertical ? 10 : 8)
+      column_index = @random_number.rand(50) % (@is_vertical ? 8 : 10)
+      break if !((@board[row_index][column_index] != 0) ||
                 (@is_vertical &&
-                        ((@new_board[init_x][init_y + 1] != 0) || (@new_board[init_x][init_y + 2] != 0))) ||
+                        ((@board[row_index][column_index + 1] != 0) || (@board[row_index][column_index + 2] != 0))) ||
                 (!@is_vertical &&
-                        ((@new_board[init_x + 1][init_y] != 0) || (@new_board[init_x + 2][init_y] != 0))))
+                        ((@board[row_index + 1][column_index] != 0) || (@board[row_index + 2][column_index] != 0))))
 
     end
 
     if @is_vertical
-      @new_board[init_x][init_y]   = @new_board[init_x][init_y + 1] = @new_board[init_x][init_y + 2] = SUBMARINE
+      @board[row_index][column_index]   = @board[row_index][column_index + 1] = @board[row_index][column_index + 2] = SUBMARINE
 
     else
-      @new_board[init_x][init_y]   = @new_board[init_x + 1][init_y] = @new_board[init_x + 2][init_y] = SUBMARINE
+      @board[row_index][column_index]   = @board[row_index + 1][column_index] = @board[row_index + 2][column_index] = SUBMARINE
     end
 
     # Arranging Tug pieces.
     loop do
       @is_vertical = (@random_number.rand(50) % 2 == 0) ? false : true
-      init_x = @random_number.rand(50) % (@is_vertical ? 10 : 9)
-      init_y = @random_number.rand(50) % (@is_vertical ? 9 : 10)
-      break if !((@new_board[init_x][init_y] != 0) ||
+      row_index = @random_number.rand(50) % (@is_vertical ? 10 : 9)
+      column_index = @random_number.rand(50) % (@is_vertical ? 9 : 10)
+      break if !((@board[row_index][column_index] != 0) ||
                 (@is_vertical &&
-                        ((@new_board[init_x][init_y + 1] != 0))) ||
-                (!@is_vertical && ((@new_board[init_x + 1][init_y] != 0))))
+                        ((@board[row_index][column_index + 1] != 0))) ||
+                (!@is_vertical && ((@board[row_index + 1][column_index] != 0))))
 
     end
 
     if @is_vertical
-      @new_board[init_x][init_y]   = @new_board[init_x][init_y + 1] = TUG
+      @board[row_index][column_index]   = @board[row_index][column_index + 1] = TUG
 
     else
-      @new_board[init_x][init_y]   = @new_board[init_x + 1][init_y] = TUG
+      @board[row_index][column_index]   = @board[row_index + 1][column_index] = TUG
     end
   end
 
+  # Public: Prints the game board with all the ships.
+  #
+  # Returns nothing.
   def display
     for i in 0..9
       for j in 0..9
-        if (@new_board[i][j] == 0)
+        if (@board[i][j] == 0)
           print '.'
         else
-          print @new_board[i][j]
+          print @board[i][j]
         end
       end
       puts
