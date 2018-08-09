@@ -1,9 +1,9 @@
 class BattleshipsController
-  TUG = 'T'.freeze
-  DESTROYER = 'D'.freeze
-  SUBMARINE = 'S'.freeze
   BATTLESHIP = 'B'.freeze
   CRUISER   = 'C'.freeze
+  DESTROYER = 'D'.freeze
+  SUBMARINE = 'S'.freeze
+  TUG = 'T'.freeze
 
   def initialize
     @board = Array.new(10) { Array.new(10) }
